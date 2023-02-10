@@ -2,3 +2,6 @@
 *.csv
 *.png
 *.xlsx
+/xx_old
+/01_descriptive/02_descriptive_plots_paper.ipynb
+/01_descriptive/03_readme.ipynb
