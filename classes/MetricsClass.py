@@ -41,12 +41,12 @@ class Evaluation(Mitigation):
         met = ["EO", "PE", "PP", "SA"]
         model = ["DL", "DTE", "KNN"]
         ranges = [
-            ("02-9", 8),
-            ("10-19", 9),
-            ("20-29", 9),
-            ("30-39", 9),
-            ("40-49", 9),
-            ("50-60", 10),
+            ("02-9", 8, 2, 10),
+            ("10-19", 9, 10, 20),
+            ("20-29", 9, 20, 30),
+            ("30-39", 9, 30, 40),
+            ("40-49", 9, 40, 50),
+            ("50-60", 10, 50, 60),
         ]
 
         frame_means = pd.DataFrame()
@@ -54,9 +54,9 @@ class Evaluation(Mitigation):
         # for each metric
         for m in met:
             for mo in model:
-                for r, div in ranges:
+                for r, div, begin, end in ranges:
                     s = 0
-                    for i in range(int(r[:2]), int(r[-2:]) + 1):
+                    for i in range(begin, end):
                         s += df[m][mo][i]
                     temp = pd.DataFrame(
                         {"Metrik": [m], "Model": mo, "Range": r, "Val": s / div}
@@ -67,7 +67,6 @@ class Evaluation(Mitigation):
         mean_table = pd.pivot_table(
             frame_means, values=["Val"], index=["Range"], columns=["Metrik", "Model"]
         )
-
         return mean_table
 
     def threshold001(self,v, props=""):
