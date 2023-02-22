@@ -11,13 +11,13 @@ class in_session_KNN(MachineLearning):
     def __init__(self):
         super().__init__()
 
-    def loop_matrices(self, source_path):
+    def loop_matrices(self, source_path, n_neighbors,weights):
         for i in self.range_n:
             df = self.load_data(i, source_path)
             cv, X_train, X_test, y_train, y_test = self.prepare_training_set(df)
 
             # fit
-            knn = KNeighborsClassifier(n_neighbors=2)
+            knn = KNeighborsClassifier(n_neighbors=n_neighbors,weights=weights)
             knn = knn.fit(X_train, y_train)
             pred = knn.predict(X_test)
 

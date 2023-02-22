@@ -13,7 +13,7 @@ from MitigationObjectClass import Mitigation
 
 class MachineLearning(Mitigation):
     """
-    Describe Class
+    Machine Learning Class that provides functions for different ml implementations
     """
 
     path_ = "c:/Users/Nathalie/Nextcloud/LADi/Orthografie Trainer/Code/"
@@ -48,6 +48,11 @@ class MachineLearning(Mitigation):
         return self.metrics
 
     def load_data(self, i, source_path):
+        """
+        load data matrix from specific source
+        :param source_path: specifies path of the matrix
+        :return: loaded data as df
+        """
         path = source_path + str(i) + ".pkl"
         infile = open(path, "rb")
         df = pickle.load(infile)
@@ -57,6 +62,11 @@ class MachineLearning(Mitigation):
         return df
 
     def prepare_training_set(self, df):
+        """
+        prepares given df for model fitting
+        :param df: df to be prepared
+        :return: training and test set
+        """
         # prepare features
         X = df[self.feature_cols]
         y = df.y

@@ -2,7 +2,6 @@ import pickle
 import pandas as pd
 from imblearn.over_sampling import SMOTE
 
-
 class Mitigation:
     """
     This class creates the data object to  mitigate and splits it into matrices for temporal prediction models
@@ -43,9 +42,14 @@ class Mitigation:
     def get_demographic_category(self):
         return self.demographic_category
 
+    
     def load_matrices(self, folder, file_type, balancing):
         """
         Method loads data per matrix and only keeps majority and minority group
+
+        :param folder: specifies folder to store result
+        :param file_type: specifies file type of the result
+        :param balancing: binary indicates if an oversampling should be carried out
         """
         for i in self.range_n:
             path = (
@@ -59,12 +63,14 @@ class Mitigation:
             infile.close()
             df = df.reset_index(level=0)
 
-            df_1 = df[df[self.majority_group] == 1]
-            if self.minority_group == None:
-                df_0 = df[df[self.majority_group] == 0]
-            else:
-                df_0 = df[df[self.minority_group] == 1]
-            df = pd.concat([df_0, df_1])
+            if self.demographic_category == "AbiEltern":
+                df = self.prepare_feature_Abi_Eltern(df)
+            elif self.demographic_category == "Buecher":
+                df = self.prepare_feature_buecher(df)
+            elif self.demographic_category == 'eigSprache':
+                df = self.prepare_feature_eig_sprache(df)
+            else: 
+                df = self.prepare_feature(df)
 
             if balancing == True:
                 df = self.oversampling_minority(df)
@@ -72,7 +78,60 @@ class Mitigation:
             path = self.path_ + self.mitigation_path + folder + str(i) + file_type
             df.to_pickle(path)
 
+    def prepare_feature_Abi_Eltern (self,df):
+        df = self.add_survey_data(df)
+        df[self.demographic_category] = df[self.demographic_category].astype("float")
+        df[self.demographic_category] = df[self.demographic_category].replace([2], 1)
+        df_1 = df[df[self.demographic_category] == 1]
+        df_0 = df[df[self.demographic_category] == 0]
+        df = pd.concat([df_0, df_1])
+
+        return df
+
+    def prepare_feature_eig_sprache (self,df):
+        df = self.add_survey_data(df)
+        df_1 = df[df[self.demographic_category] == 1]
+        df_0 = df[df[self.demographic_category] == 0]
+        df = pd.concat([df_0, df_1])
+
+        return df
+
+    def prepare_feature (self,df):
+        df_1 = df[df[self.majority_group] == 1]
+        df_0 = df[df[self.minority_group] == 1]
+        df = pd.concat([df_0, df_1])
+
+        return df
+
+    def prepare_feature_buecher (self,df):
+        df = self.add_survey_data(df)
+        df[self.demographic_category] = df[self.demographic_category].replace(["10"], 0)
+        df[self.demographic_category] = df[self.demographic_category].replace(["200"], 1)
+        df_0 = df[df[self.demographic_category] == 0.0]
+        df_1 = df[df[self.demographic_category] == 1]
+        df = pd.concat([df_0, df_1])
+        df[self.demographic_category] = df[self.demographic_category].astype("float")
+
+        return df
+
+    def add_survey_data(self, df):
+        infile = open("../../02_dropout_prediction/01_keep_it_up/fairness_ready.pkl", "rb")
+        survey_data = pickle.load(infile)
+        infile.close()
+
+        survey_data = survey_data[["UebungsID", self.demographic_category]]
+        survey_data = survey_data.drop_duplicates()
+        df = pd.merge(df, survey_data, how="left", on="UebungsID")
+
+        return df
+        
     def oversampling_minority(self, df):
+        """
+        method to oversample minority groups
+
+        :param df: data frame to with two unbalanced groups
+        :return: df with resampled groups
+        """
         X_df = df.drop(columns=[self.majority_group])
         y_df = df[self.majority_group]
         smote = SMOTE(random_state=42)
