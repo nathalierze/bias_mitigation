@@ -106,7 +106,7 @@ class MachineLearning(Mitigation):
         for group, subgroup, matrix in zip(group, subgroup, matrice):
             path = (
                 self.path_
-                + "02_dropout_prediction/01_keep_it_up/"
+                + "04_bias_mitigation/00_data/"
                 + matrix
                 + "/matrix"
                 + str(i)

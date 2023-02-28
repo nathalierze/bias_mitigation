@@ -54,7 +54,7 @@ class Mitigation:
         for i in self.range_n:
             path = (
                 self.path_
-                + "02_dropout_prediction/01_keep_it_up/matrices_allsessions/matrix"
+                + "04_bias_mitigation/00_data/matrices_allsessions/matrix"
                 + str(i)
                 + ".pkl"
             )
@@ -79,6 +79,9 @@ class Mitigation:
             df.to_pickle(path)
 
     def prepare_feature_Abi_Eltern (self,df):
+        """
+        :return: data frame
+        """
         df = self.add_survey_data(df)
         df[self.demographic_category] = df[self.demographic_category].astype("float")
         df[self.demographic_category] = df[self.demographic_category].replace([2], 1)
@@ -115,7 +118,11 @@ class Mitigation:
         return df
 
     def add_survey_data(self, df):
-        infile = open("../../02_dropout_prediction/01_keep_it_up/fairness_ready.pkl", "rb")
+        path = (
+            self.path_
+            + "04_bias_mitigation/00_data/preprocessed_fairness_data.pkl"
+        )
+        infile = open(path, "rb")
         survey_data = pickle.load(infile)
         infile.close()
 

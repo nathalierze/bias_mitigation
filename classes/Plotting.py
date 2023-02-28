@@ -3,11 +3,19 @@ import pickle
 import seaborn as sns
 
 class Plots:
+    """
+    Class provides function to plot count of sentences per matrix
+    """
     def __init__(self):
         pass
 
-
     def plot_count_of_sentences_per_matrix(self, n_start,n_end,source_path):
+        """
+        Plots Count of sentences per matrix
+        :param n_start: start range index of matrix
+        :param n_end: end range index of matrix
+        :param source_path: source path to were matrices are stored
+        """
         sentence_len = pd.DataFrame(columns=["Sentence", "Count"])
         n= list(range(n_start, n_end))
         for x in n:

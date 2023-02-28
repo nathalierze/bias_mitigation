@@ -3,7 +3,7 @@ import pandas as pd
 
 class Evaluation(Mitigation):
     """
-    Describe class
+    Provides function to evaluate ML Model with regards to its fairness
     """
 
     def __init__(self, metrics):
@@ -11,7 +11,10 @@ class Evaluation(Mitigation):
         self.metrics = metrics
 
     def evaluate(self):
-        
+        """
+        Evaluates model results regarding fairness by calculating PP, EO, SA, PE
+        :return: data frame with fairness metrics
+        """
         grouped = self.metrics.groupby(self.metrics.group)
         df = grouped.get_group(self.demographic_category)
        
@@ -38,6 +41,11 @@ class Evaluation(Mitigation):
         return df
 
     def create_table(self,df):
+        """
+        Creates a table with mean values from every 10 values
+        :param: data frame that is consolidated
+        :return: table with mean values
+        """
         met = ["EO", "PE", "PP", "SA"]
         model = ["DL", "DTE", "KNN"]
         ranges = [
@@ -70,14 +78,23 @@ class Evaluation(Mitigation):
         return mean_table
 
     def threshold001(self,v, props=""):
+        """
+        returns props if v is above |0.02|
+        """
         return props if (v > 0.02) or (v < -0.02) else None
 
 
     def threshold005(self,v, props=""):
+        """
+        returns props if v is above |0.05|
+        """
         return props if (v > 0.05) or (v < -0.05) else None
 
 
     def negativeValue(self,v, props=""):
+        """
+        returns props if v is negative
+        """
         return props if (v < 0) else None
 
     def showTable(self,df):

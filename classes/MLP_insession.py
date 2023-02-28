@@ -115,7 +115,8 @@ class in_session_MLP(MachineLearning):
 
         for group, subgroup, matrix in zip(group, subgroup, matrice):
             path = (
-                "../../02_dropout_prediction/01_keep_it_up/"
+                self.path_
+                + "04_bias_mitigation/00_data/"
                 + matrix
                 + "/matrix"
                 + str(i)
