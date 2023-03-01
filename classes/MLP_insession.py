@@ -1,10 +1,16 @@
 import pickle
 from MLClass import MachineLearning
-from sklearn.metrics import (accuracy_score, confusion_matrix,
-                             precision_score, recall_score, roc_auc_score)
+from sklearn.metrics import (
+    accuracy_score,
+    confusion_matrix,
+    precision_score,
+    recall_score,
+    roc_auc_score,
+)
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.models import Sequential
+
 
 class in_session_MLP(MachineLearning):
     """
@@ -15,9 +21,9 @@ class in_session_MLP(MachineLearning):
         super().__init__()
         self.model = None
 
-    def loop_matrices(self, source_path, optimizer, loss, mlp_metric,input_dim, nodes):
+    def loop_matrices(self, source_path, optimizer, loss, mlp_metric, input_dim, nodes):
         """
-        Method loops through matrices, prepares training and test data set and fits model. 
+        Method loops through matrices, prepares training and test data set and fits model.
         Calls function to calculate performance metrics and saves them.
         :param source_path: source path were data is stored
         :param optimizer, loss, mlp_metric: model parameters
@@ -37,9 +43,7 @@ class in_session_MLP(MachineLearning):
 
             self.model = self.build_model(input_dim, nodes)
 
-            self.model.compile(
-                loss=loss, optimizer=optimizer, metrics=[mlp_metric]
-            )
+            self.model.compile(loss=loss, optimizer=optimizer, metrics=[mlp_metric])
 
             self.model.fit(
                 x=X_train,
@@ -54,7 +58,7 @@ class in_session_MLP(MachineLearning):
 
             # call function to get metrics and append metrics to df
             a, p, r, roc_auc, fpr = self.get_mlp_metrics(X_test, y_test)
-            
+
             self.metrics = self.metrics.append(
                 {
                     "model": "DL",
@@ -75,8 +79,7 @@ class in_session_MLP(MachineLearning):
 
         return self.metrics
 
-
-    def build_model(self,input_dim, nodes):
+    def build_model(self, input_dim, nodes):
         """
         build mlp model
         :param input_dim: defines input_dim of input layer
@@ -95,7 +98,7 @@ class in_session_MLP(MachineLearning):
     def get_mlp_metrics(self, X, y):
         """
         calculate and extract relevant metrics
-        :param X,y: x and y 
+        :param X,y: x and y
         :return: a,p,r,roc_auc,fpr model metrics
         """
         yhat_probs = self.model.predict(X, verbose=0)
@@ -145,8 +148,7 @@ class in_session_MLP(MachineLearning):
 
             a, p, r, roc_auc, fpr = self.get_mlp_metrics(X, y)
 
-
-            if(self.minority_group !=None):
+            if self.minority_group != None:
                 self.metrics = self.metrics.append(
                     {
                         "model": "DL",
@@ -163,11 +165,11 @@ class in_session_MLP(MachineLearning):
                     ignore_index=True,
                 )
             else:
-                self.metrics = self.non_aggregated(a, p, r, roc_auc, fpr,i,df )
+                self.metrics = self.non_aggregated(a, p, r, roc_auc, fpr, i, df)
 
         return self.metrics
-    
-    def non_aggregated(self,a, p, r, roc_auc, fpr,i,df):
+
+    def non_aggregated(self, a, p, r, roc_auc, fpr, i, df):
         """
         add accuracy metrics for the group in aggregation bias mitigation
         :param a,p,r,roc_auc,fpr: metrics
@@ -176,20 +178,19 @@ class in_session_MLP(MachineLearning):
         :return: metrics
         """
         self.metrics = self.metrics.append(
-        {
-            "model": "DL",
-            "group": self.demographic_category,
-            "subgroup": self.majority_group,
-            "Length": len(df),
-            "Sentence": i,
-            "Accuracy": a,
-            "Precision": p,
-            "Recall": r,
-            "AUC": roc_auc,
-            "FPR": fpr,
-        },
-        ignore_index=True,
+            {
+                "model": "DL",
+                "group": self.demographic_category,
+                "subgroup": self.majority_group,
+                "Length": len(df),
+                "Sentence": i,
+                "Accuracy": a,
+                "Precision": p,
+                "Recall": r,
+                "AUC": roc_auc,
+                "FPR": fpr,
+            },
+            ignore_index=True,
         )
 
         return self.metrics
-        

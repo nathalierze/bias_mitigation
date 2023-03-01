@@ -2,6 +2,7 @@ import pickle
 import pandas as pd
 from imblearn.over_sampling import SMOTE
 
+
 class Mitigation:
     """
     This class creates the data object to  mitigate and splits it into matrices for temporal prediction models
@@ -40,7 +41,6 @@ class Mitigation:
     def get_demographic_category(self):
         return self.demographic_category
 
-    
     def load_matrices(self, folder, file_type, balancing):
         """
         Method loads data per matrix and only keeps majority and minority group
@@ -66,9 +66,9 @@ class Mitigation:
                 df = self.prepare_feature_Abi_Eltern(df)
             elif self.demographic_category == "Buecher":
                 df = self.prepare_feature_buecher(df)
-            elif self.demographic_category == 'eigSprache':
+            elif self.demographic_category == "eigSprache":
                 df = self.prepare_feature_eig_sprache(df)
-            else: 
+            else:
                 df = self.prepare_feature(df)
 
             if balancing == True:
@@ -77,7 +77,7 @@ class Mitigation:
             path = self.path_ + self.mitigation_path + folder + str(i) + file_type
             df.to_pickle(path)
 
-    def prepare_feature_Abi_Eltern (self,df):
+    def prepare_feature_Abi_Eltern(self, df):
         """
         preprocessing features of parental education feature
         :param df: data frame
@@ -92,7 +92,7 @@ class Mitigation:
 
         return df
 
-    def prepare_feature_eig_sprache (self,df):
+    def prepare_feature_eig_sprache(self, df):
         """
         preprocessing features of migration feature
         :param df: data frame
@@ -105,7 +105,7 @@ class Mitigation:
 
         return df
 
-    def prepare_feature (self,df):
+    def prepare_feature(self, df):
         """
         preprocessing features for all categories that have a defined minority group
         :param df: data frame
@@ -117,7 +117,7 @@ class Mitigation:
 
         return df
 
-    def prepare_feature_buecher (self,df):
+    def prepare_feature_buecher(self, df):
         """
         preprocessing features of books feature
         :param df: data frame
@@ -125,7 +125,9 @@ class Mitigation:
         """
         df = self.add_survey_data(df)
         df[self.demographic_category] = df[self.demographic_category].replace(["10"], 0)
-        df[self.demographic_category] = df[self.demographic_category].replace(["200"], 1)
+        df[self.demographic_category] = df[self.demographic_category].replace(
+            ["200"], 1
+        )
         df_0 = df[df[self.demographic_category] == 0.0]
         df_1 = df[df[self.demographic_category] == 1]
         df = pd.concat([df_0, df_1])
@@ -140,9 +142,7 @@ class Mitigation:
         :return: data frame
         """
         path = (
-            self.path_
-            + self.mitigation_path
-            + "00_data/preprocessed_fairness_data.pkl"
+            self.path_ + self.mitigation_path + "00_data/preprocessed_fairness_data.pkl"
         )
         infile = open(path, "rb")
         survey_data = pickle.load(infile)
@@ -153,7 +153,7 @@ class Mitigation:
         df = pd.merge(df, survey_data, how="left", on="UebungsID")
 
         return df
-        
+
     def oversampling_minority(self, df):
         """
         method to oversample minority groups

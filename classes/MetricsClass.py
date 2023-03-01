@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from itertools import product
 
+
 class Evaluation(Mitigation):
     """
     Provides function to evaluate ML Model with regards to its fairness
@@ -19,7 +20,7 @@ class Evaluation(Mitigation):
         """
         grouped = self.metrics.groupby(self.metrics.group)
         df = grouped.get_group(self.demographic_category)
-       
+
         df = df.drop(columns=["group", "Accuracy"])
         df = pd.pivot_table(
             df,
@@ -27,7 +28,7 @@ class Evaluation(Mitigation):
             index=["model", "Sentence"],
             columns=["subgroup"],
         )
-        
+
         # calculate  metrics
         df["PP"] = df.Precision[self.minority_group] - df.Precision[self.majority_group]
         df["EO"] = df.Recall[self.majority_group] - df.Recall[self.minority_group]
@@ -43,7 +44,7 @@ class Evaluation(Mitigation):
 
         return df
 
-    def create_table(self,df):
+    def create_table(self, df):
         """
         Creates a table with mean values from every 10 values
         :param: data frame that is consolidated
@@ -80,7 +81,7 @@ class Evaluation(Mitigation):
         )
         return mean_table
 
-    def evaluate_learning_bias(self, index_list,columns):
+    def evaluate_learning_bias(self, index_list, columns):
         """
         Evaluates model results regarding fairness by calculating PP, EO, SA, PE
         specific function for learning bias mitigation, as evaluation takes model parameters into account
@@ -88,7 +89,7 @@ class Evaluation(Mitigation):
         """
         grouped = self.metrics.groupby(self.metrics.group)
         df = grouped.get_group(self.demographic_category)
-       
+
         df = df.drop(columns=["group", "Accuracy", "model"])
         df = pd.pivot_table(
             df,
@@ -96,7 +97,7 @@ class Evaluation(Mitigation):
             index=index_list,
             columns=["subgroup"],
         )
-        
+
         df["PP"] = df.Precision[self.minority_group] - df.Precision[self.majority_group]
         df["EO"] = df.Recall[self.majority_group] - df.Recall[self.minority_group]
         df["SA"] = df.AUC[self.minority_group] - df.AUC[self.majority_group]
@@ -108,27 +109,25 @@ class Evaluation(Mitigation):
         )
         return df
 
-    def threshold001(self,v, props=""):
+    def threshold001(self, v, props=""):
         """
         returns props if v is above |0.02|
         """
         return props if (v > 0.02) or (v < -0.02) else None
 
-
-    def threshold005(self,v, props=""):
+    def threshold005(self, v, props=""):
         """
         returns props if v is above |0.05|
         """
         return props if (v > 0.05) or (v < -0.05) else None
 
-
-    def negativeValue(self,v, props=""):
+    def negativeValue(self, v, props=""):
         """
         returns props if v is negative
         """
         return props if (v < 0) else None
 
-    def showTable(self,df):
+    def showTable(self, df):
         """
         functions to format results
         set two threshols: one at |0.02| in orange and one at |0.05| in red
