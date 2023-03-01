@@ -17,7 +17,13 @@ class in_session_MLP(MachineLearning):
 
     def loop_matrices(self, source_path, optimizer, loss, mlp_metric,input_dim, nodes):
         """
-        method 
+        Method loops through matrices, prepares training and test data set and fits model. 
+        Calls function to calculate performance metrics and saves them.
+        :param source_path: source path were data is stored
+        :param optimizer, loss, mlp_metric: model parameters
+        :param input_dim: defines input_dim of input layer
+        :param nodes: defines nodes of input layer
+        :return: metrics
         """
         for i in self.range_n:
             df = self.load_data(i, source_path)
@@ -88,8 +94,9 @@ class in_session_MLP(MachineLearning):
 
     def get_mlp_metrics(self, X, y):
         """
-        calculate and extract relevant metrics from y and pred
-        return metrics
+        calculate and extract relevant metrics
+        :param X,y: x and y 
+        :return: a,p,r,roc_auc,fpr model metrics
         """
         yhat_probs = self.model.predict(X, verbose=0)
         yhat_classes = (self.model.predict(X) > 0.5).astype("int32")
@@ -106,6 +113,12 @@ class in_session_MLP(MachineLearning):
         return a, p, r, roc_auc, fpr
 
     def predict_subgroups(self, i):
+        """
+        Predicts metrics for each sub group with model
+        :param i: sentence number
+
+        :return: metrics
+        """
         group = [self.demographic_category, self.demographic_category]
         subgroup = [self.majority_group, self.minority_group]
         matrice = [
@@ -155,6 +168,13 @@ class in_session_MLP(MachineLearning):
         return self.metrics
     
     def non_aggregated(self,a, p, r, roc_auc, fpr,i,df):
+        """
+        add accuracy metrics for the group in aggregation bias mitigation
+        :param a,p,r,roc_auc,fpr: metrics
+        :param i: range
+        :param df: dataframe
+        :return: metrics
+        """
         self.metrics = self.metrics.append(
         {
             "model": "DL",

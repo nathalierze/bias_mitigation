@@ -57,6 +57,13 @@ class in_session_decision_tree(MachineLearning):
         return self.metrics
 
     def non_aggregated(self,a, p, r, roc_auc, fpr,i,df):
+        """
+        add accuracy metrics for the group in aggregation bias mitigation
+        :param a,p,r,roc_auc,fpr: metrics
+        :param i: range
+        :param df: dataframe
+        :return: metrics
+        """
         self.metrics = self.metrics.append(
         {
             "model": "DTE",

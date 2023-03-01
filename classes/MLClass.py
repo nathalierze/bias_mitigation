@@ -36,8 +36,6 @@ class MachineLearning(Mitigation):
             ]
         )
 
-        print("Hi ML class")
-
     def set_feature_cols(self, list):
         self.feature_cols = list
 
@@ -67,7 +65,6 @@ class MachineLearning(Mitigation):
         :param df: df to be prepared
         :return: training and test set
         """
-        # prepare features
         X = df[self.feature_cols]
         y = df.y
         y = y.astype("int")
@@ -96,6 +93,13 @@ class MachineLearning(Mitigation):
         return a, p, r, roc_auc, fpr
 
     def predict_subgroups(self, i, clf, model):
+        """
+        Predicts metrics for each sub group with model
+        :param i: sentence number
+        :param clf: fitted model
+        :param model: model name
+        :return: metrics
+        """
         group = [self.demographic_category, self.demographic_category]
         subgroup = [self.majority_group, self.minority_group]
         matrice = [

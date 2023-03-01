@@ -16,8 +16,6 @@ class Mitigation:
         self.majority_group = None
         self.demographic_category = None
 
-        print("Created a Mitigation Object")
-
     def set_range(self, temp_start, temp_end):
         self.range_n = list(range(temp_start, temp_end))
 
@@ -54,7 +52,8 @@ class Mitigation:
         for i in self.range_n:
             path = (
                 self.path_
-                + "04_bias_mitigation/00_data/matrices_allsessions/matrix"
+                + self.mitigation_path
+                + "00_data/matrices_allsessions/matrix"
                 + str(i)
                 + ".pkl"
             )
@@ -80,6 +79,8 @@ class Mitigation:
 
     def prepare_feature_Abi_Eltern (self,df):
         """
+        preprocessing features of parental education feature
+        :param df: data frame
         :return: data frame
         """
         df = self.add_survey_data(df)
@@ -92,6 +93,11 @@ class Mitigation:
         return df
 
     def prepare_feature_eig_sprache (self,df):
+        """
+        preprocessing features of migration feature
+        :param df: data frame
+        :return: data frame
+        """
         df = self.add_survey_data(df)
         df_1 = df[df[self.demographic_category] == 1]
         df_0 = df[df[self.demographic_category] == 0]
@@ -100,6 +106,11 @@ class Mitigation:
         return df
 
     def prepare_feature (self,df):
+        """
+        preprocessing features for all categories that have a defined minority group
+        :param df: data frame
+        :return: data frame
+        """
         df_1 = df[df[self.majority_group] == 1]
         df_0 = df[df[self.minority_group] == 1]
         df = pd.concat([df_0, df_1])
@@ -107,6 +118,11 @@ class Mitigation:
         return df
 
     def prepare_feature_buecher (self,df):
+        """
+        preprocessing features of books feature
+        :param df: data frame
+        :return: data frame
+        """
         df = self.add_survey_data(df)
         df[self.demographic_category] = df[self.demographic_category].replace(["10"], 0)
         df[self.demographic_category] = df[self.demographic_category].replace(["200"], 1)
@@ -118,9 +134,15 @@ class Mitigation:
         return df
 
     def add_survey_data(self, df):
+        """
+        retrieves survey data and  merges with data frame
+        :param df: data frame
+        :return: data frame
+        """
         path = (
             self.path_
-            + "04_bias_mitigation/00_data/preprocessed_fairness_data.pkl"
+            + self.mitigation_path
+            + "00_data/preprocessed_fairness_data.pkl"
         )
         infile = open(path, "rb")
         survey_data = pickle.load(infile)
@@ -135,7 +157,6 @@ class Mitigation:
     def oversampling_minority(self, df):
         """
         method to oversample minority groups
-
         :param df: data frame to with two unbalanced groups
         :return: df with resampled groups
         """

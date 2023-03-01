@@ -28,6 +28,7 @@ class Evaluation(Mitigation):
             columns=["subgroup"],
         )
         
+        # calculate  metrics
         df["PP"] = df.Precision[self.minority_group] - df.Precision[self.majority_group]
         df["EO"] = df.Recall[self.majority_group] - df.Recall[self.minority_group]
         df["SA"] = df.AUC[self.minority_group] - df.AUC[self.majority_group]
