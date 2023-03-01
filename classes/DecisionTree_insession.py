@@ -46,13 +46,13 @@ class in_session_decision_tree(MachineLearning):
                         "Precision": p,
                         "Recall": r,
                         "AUC": roc_auc,
-                        "FPR": fpr,
+                        "FPR": fpr
                     },
                     ignore_index=True,
                 )
                 self.metrics = self.predict_subgroups(i, clf, "DTE")
             else:
-                self.metrics = self.non_aggregated(a, p, r, roc_auc, fpr,i,df )
+                self.metrics = self.non_aggregated(a, p, r, roc_auc, fpr,i,df)
 
         return self.metrics
 
@@ -68,7 +68,7 @@ class in_session_decision_tree(MachineLearning):
             "Precision": p,
             "Recall": r,
             "AUC": roc_auc,
-            "FPR": fpr,
+            "FPR": fpr
         },
         ignore_index=True,
         )

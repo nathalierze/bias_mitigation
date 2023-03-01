@@ -32,7 +32,7 @@ class MachineLearning(Mitigation):
                 "Precision",
                 "Recall",
                 "AUC",
-                "FPR",
+                "FPR"
             ]
         )
 
@@ -134,7 +134,7 @@ class MachineLearning(Mitigation):
                     "Precision": p,
                     "Recall": r,
                     "AUC": roc_auc,
-                    "FPR": fpr,
+                    "FPR": fpr
                 },
                 ignore_index=True,
             )

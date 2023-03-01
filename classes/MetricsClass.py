@@ -1,5 +1,7 @@
 from MitigationObjectClass import Mitigation
 import pandas as pd
+import numpy as np
+from itertools import product
 
 class Evaluation(Mitigation):
     """
@@ -76,6 +78,34 @@ class Evaluation(Mitigation):
             frame_means, values=["Val"], index=["Range"], columns=["Metrik", "Model"]
         )
         return mean_table
+
+    def evaluate_learning_bias(self, index_list,columns):
+        """
+        Evaluates model results regarding fairness by calculating PP, EO, SA, PE
+        specific function for learning bias mitigation, as evaluation takes model parameters into account
+        :return: data frame with fairness metrics
+        """
+        grouped = self.metrics.groupby(self.metrics.group)
+        df = grouped.get_group(self.demographic_category)
+       
+        df = df.drop(columns=["group", "Accuracy", "model"])
+        df = pd.pivot_table(
+            df,
+            values=["Precision", "Recall", "AUC", "FPR"],
+            index=index_list,
+            columns=["subgroup"],
+        )
+        
+        df["PP"] = df.Precision[self.minority_group] - df.Precision[self.majority_group]
+        df["EO"] = df.Recall[self.majority_group] - df.Recall[self.minority_group]
+        df["SA"] = df.AUC[self.minority_group] - df.AUC[self.majority_group]
+        df["PE"] = df.FPR[self.majority_group] - df.FPR[self.minority_group]
+        df = df.drop(columns=["AUC", "Precision", "Recall", "FPR"])
+        df.columns = df.columns.droplevel(1)
+        df = pd.pivot_table(
+            df, values=["PP", "EO", "SA", "PE"], index=["Sentence"], columns=columns
+        )
+        return df
 
     def threshold001(self,v, props=""):
         """
