@@ -131,20 +131,45 @@ class in_session_MLP(MachineLearning):
             y = y.astype("int")
 
             a, p, r, roc_auc, fpr = self.get_mlp_metrics(X, y)
-            self.metrics = self.metrics.append(
-                {
-                    "model": "DL",
-                    "group": group,
-                    "subgroup": subgroup,
-                    "Length": len(df),
-                    "Sentence": i,
-                    "Accuracy": a,
-                    "Precision": p,
-                    "Recall": r,
-                    "AUC": roc_auc,
-                    "FPR": fpr,
-                },
-                ignore_index=True,
-            )
+
+
+            if(self.minority_group !=None):
+                self.metrics = self.metrics.append(
+                    {
+                        "model": "DL",
+                        "group": group,
+                        "subgroup": subgroup,
+                        "Length": len(df),
+                        "Sentence": i,
+                        "Accuracy": a,
+                        "Precision": p,
+                        "Recall": r,
+                        "AUC": roc_auc,
+                        "FPR": fpr,
+                    },
+                    ignore_index=True,
+                )
+            else:
+                self.metrics = self.non_aggregated(a, p, r, roc_auc, fpr,i,df )
 
         return self.metrics
+    
+    def non_aggregated(self,a, p, r, roc_auc, fpr,i,df):
+        self.metrics = self.metrics.append(
+        {
+            "model": "DL",
+            "group": self.demographic_category,
+            "subgroup": self.majority_group,
+            "Length": len(df),
+            "Sentence": i,
+            "Accuracy": a,
+            "Precision": p,
+            "Recall": r,
+            "AUC": roc_auc,
+            "FPR": fpr,
+        },
+        ignore_index=True,
+        )
+
+        return self.metrics
+        
