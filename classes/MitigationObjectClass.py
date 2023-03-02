@@ -169,3 +169,47 @@ class Mitigation:
         )
 
         return df
+
+    def load_matrices_aggregation_bias(self, folder, file_type, group):
+        """
+        Method loads data per matrix and only keeps majority and minority group
+
+        :param folder: specifies folder to store result
+        :param file_type: specifies file type of the result
+        :param balancing: binary indicates if an oversampling should be carried out
+        """
+        for i in self.range_n:
+            path = (
+                self.path_
+                + self.mitigation_path
+                + "00_data/matrices_allsessions/matrix"
+                + str(i)
+                + ".pkl"
+            )
+            infile = open(path, "rb")
+            df = pickle.load(infile)
+            infile.close()
+            df = df.reset_index(level=0)
+
+            if self.demographic_category == "AbiEltern":
+                df = self.add_survey_data(df)
+                df[self.demographic_category] = df[self.demographic_category].astype("float")
+                df[self.demographic_category] = df[self.demographic_category].replace([2], 1)
+                df = df[df[self.demographic_category] == group]
+
+            elif self.demographic_category == "Buecher":
+                df = self.add_survey_data(df)
+                df[self.demographic_category] = df[self.demographic_category].replace(["10"], 0)
+                df[self.demographic_category] = df[self.demographic_category].replace(["200"], 1)
+                df = df[df[self.demographic_category] == group]
+                df[self.demographic_category] = df[self.demographic_category].astype("float")
+                
+            elif self.demographic_category == "eigSprache":
+                df = self.add_survey_data(df)
+                df = df[df[self.demographic_category] == group]
+
+            elif self.demographic_category == "gender":
+                df = df[df[self.majority_group] == group]
+
+            path = self.path_ + self.mitigation_path + folder + str(i) + file_type
+            df.to_pickle(path)

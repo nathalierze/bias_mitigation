@@ -59,23 +59,26 @@ class in_session_MLP(MachineLearning):
             # call function to get metrics and append metrics to df
             a, p, r, roc_auc, fpr = self.get_mlp_metrics(X_test, y_test)
 
-            self.metrics = self.metrics.append(
-                {
-                    "model": "DL",
-                    "group": "all",
-                    "subgroup": "all",
-                    "Length": len(df),
-                    "Sentence": i,
-                    "Accuracy": a,
-                    "Precision": p,
-                    "Recall": r,
-                    "AUC": roc_auc,
-                    "FPR": fpr,
-                },
-                ignore_index=True,
-            )
+            if self.minority_group != None:
+                self.metrics = self.metrics.append(
+                    {
+                        "model": "DL",
+                        "group": "all",
+                        "subgroup": "all",
+                        "Length": len(df),
+                        "Sentence": i,
+                        "Accuracy": a,
+                        "Precision": p,
+                        "Recall": r,
+                        "AUC": roc_auc,
+                        "FPR": fpr,
+                    },
+                    ignore_index=True,
+                )
 
-            self.metrics = self.predict_subgroups(i)
+                self.metrics = self.predict_subgroups(i)
+            else:
+                self.metrics = self.non_aggregated(a, p, r, roc_auc, fpr, i, df)
 
         return self.metrics
 
@@ -148,24 +151,21 @@ class in_session_MLP(MachineLearning):
 
             a, p, r, roc_auc, fpr = self.get_mlp_metrics(X, y)
 
-            if self.minority_group != None:
-                self.metrics = self.metrics.append(
-                    {
-                        "model": "DL",
-                        "group": group,
-                        "subgroup": subgroup,
-                        "Length": len(df),
-                        "Sentence": i,
-                        "Accuracy": a,
-                        "Precision": p,
-                        "Recall": r,
-                        "AUC": roc_auc,
-                        "FPR": fpr,
-                    },
-                    ignore_index=True,
-                )
-            else:
-                self.metrics = self.non_aggregated(a, p, r, roc_auc, fpr, i, df)
+            self.metrics = self.metrics.append(
+                {
+                    "model": "DL",
+                    "group": group,
+                    "subgroup": subgroup,
+                    "Length": len(df),
+                    "Sentence": i,
+                    "Accuracy": a,
+                    "Precision": p,
+                    "Recall": r,
+                    "AUC": roc_auc,
+                    "FPR": fpr,
+                },
+                ignore_index=True,
+            )
 
         return self.metrics
 
