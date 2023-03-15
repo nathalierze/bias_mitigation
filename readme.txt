@@ -22,6 +22,9 @@ N. Rzepka, K. Simbeck, H.-G. Müller, and N. Pinkwart
 Fairness of In-session Dropout Prediction
 Proceedings of the 14th International Conference on Computer Supported Education - Volume 2: CSEDU,, SciTePress, 2022, ISBN 978-989-758-562-3 
 
+An sample data set as well as a metadata schema can be found here:
+tba
+
 This project is described in detail here:
 tba
 
