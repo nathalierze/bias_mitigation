@@ -9,6 +9,10 @@ from sklearn.metrics import (
 )
 from sklearn.model_selection import train_test_split, KFold
 from MitigationObjectClass import Mitigation
+from configparser import ConfigParser
+
+config = ConfigParser()
+config.read("../config.ini")
 
 
 class MachineLearning(Mitigation):
@@ -16,7 +20,7 @@ class MachineLearning(Mitigation):
     Machine Learning Class that provides functions for different ml implementations
     """
 
-    path_ = "c:/Users/Nathalie/Nextcloud/LADi/Orthografie Trainer/Code/"
+    path_ = config["admin"]["root_dir"]
 
     def __init__(self):
         super().__init__()
@@ -110,7 +114,8 @@ class MachineLearning(Mitigation):
         for group, subgroup, matrix in zip(group, subgroup, matrice):
             path = (
                 self.path_
-                + "04_bias_mitigation/00_data/"
+                + config["admin"]["bias_mitigation"]
+                + config["admin"]["data_dir"]
                 + matrix
                 + "/matrix"
                 + str(i)

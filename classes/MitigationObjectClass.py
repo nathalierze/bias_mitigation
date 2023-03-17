@@ -1,6 +1,10 @@
 import pickle
 import pandas as pd
 from imblearn.over_sampling import SMOTE
+from configparser import ConfigParser
+
+config = ConfigParser()
+config.read("../config.ini")
 
 
 class Mitigation:
@@ -8,8 +12,8 @@ class Mitigation:
     This class creates the data object to  mitigate and splits it into matrices for temporal prediction models
     """
 
-    path_ = "c:/Users/Nathalie/Nextcloud/LADi/Orthografie Trainer/Code/"
-    mitigation_path = "04_bias_mitigation/"
+    path_ = config["admin"]["root_dir"]
+    mitigation_path = config["admin"]["bias_mitigation"]
 
     def __init__(self):
         self.range_n = None
@@ -53,7 +57,8 @@ class Mitigation:
             path = (
                 self.path_
                 + self.mitigation_path
-                + "00_data/matrices_allsessions/matrix"
+                + config["admin"]["matrices_allsessions"]
+                + "matrix"
                 + str(i)
                 + ".pkl"
             )
@@ -142,7 +147,10 @@ class Mitigation:
         :return: data frame
         """
         path = (
-            self.path_ + self.mitigation_path + "00_data/preprocessed_fairness_data.pkl"
+            self.path_
+            + self.mitigation_path
+            + config["admin"]["data_dir"]
+            + "preprocessed_fairness_data.pkl"
         )
         infile = open(path, "rb")
         survey_data = pickle.load(infile)
@@ -182,7 +190,8 @@ class Mitigation:
             path = (
                 self.path_
                 + self.mitigation_path
-                + "00_data/matrices_allsessions/matrix"
+                + +config["admin"]["matrices_allsessions"]
+                + "matrix"
                 + str(i)
                 + ".pkl"
             )
@@ -193,17 +202,27 @@ class Mitigation:
 
             if self.demographic_category == "AbiEltern":
                 df = self.add_survey_data(df)
-                df[self.demographic_category] = df[self.demographic_category].astype("float")
-                df[self.demographic_category] = df[self.demographic_category].replace([2], 1)
+                df[self.demographic_category] = df[self.demographic_category].astype(
+                    "float"
+                )
+                df[self.demographic_category] = df[self.demographic_category].replace(
+                    [2], 1
+                )
                 df = df[df[self.demographic_category] == group]
 
             elif self.demographic_category == "Buecher":
                 df = self.add_survey_data(df)
-                df[self.demographic_category] = df[self.demographic_category].replace(["10"], 0)
-                df[self.demographic_category] = df[self.demographic_category].replace(["200"], 1)
+                df[self.demographic_category] = df[self.demographic_category].replace(
+                    ["10"], 0
+                )
+                df[self.demographic_category] = df[self.demographic_category].replace(
+                    ["200"], 1
+                )
                 df = df[df[self.demographic_category] == group]
-                df[self.demographic_category] = df[self.demographic_category].astype("float")
-                
+                df[self.demographic_category] = df[self.demographic_category].astype(
+                    "float"
+                )
+
             elif self.demographic_category == "eigSprache":
                 df = self.add_survey_data(df)
                 df = df[df[self.demographic_category] == group]

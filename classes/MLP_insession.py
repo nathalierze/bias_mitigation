@@ -10,6 +10,10 @@ from sklearn.metrics import (
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.models import Sequential
+from configparser import ConfigParser
+
+config = ConfigParser()
+config.read("../config.ini")
 
 
 class in_session_MLP(MachineLearning):
@@ -135,7 +139,8 @@ class in_session_MLP(MachineLearning):
         for group, subgroup, matrix in zip(group, subgroup, matrice):
             path = (
                 self.path_
-                + "04_bias_mitigation/00_data/"
+                + config["admin"]["bias_mitigation"]
+                + config["admin"]["data_dir"]
                 + matrix
                 + "/matrix"
                 + str(i)
