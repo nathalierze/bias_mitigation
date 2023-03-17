@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata xmlns:dcterms="http://purl.org/dc/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://purl.org/dc/terms/ http://dublincore.org/schemas/xmls/qdc/2008/02/11/dc.xsd">
+  <dcterms:title>Data Dictionary for provided code of bias mitigation approaches for less-studied demographic groups of language learning technology</dcterms:title>
+  <dcterms:description>The Data Dictionary provides information about the data set that was used to carry out the following code: XXX. In this study, the aim was to compare different bias mitigation approaches for less-studied demographic groups in language learning technologie.</dcterms:description>
+  <dcterms:creator>Nathalie Rzepka</dcterms:creator>
+  <dcterms:date>2023-03-17</dcterms:date>
+  <dcterms:format>XML</dcterms:format>
+  <dcterms:language>English</dcterms:language>
+  <dcterms:type>Text</dcterms:type>
+  <dcterms:identifier>zenodo doi</dcterms:identifier>
+  <dcterms:source>zenodo url</dcterms:source>
+  <dcterms:rights>CC BY 4.0</dcterms:rights>
+  <dcterms:subject>Algorithmic Bias</dcterms:subject>
+  <dcterms:relation>Code to Zenodo GitHub</dcterms:relation>
+  <dcterms:relation>Code to publication</dcterms:relation>
+  <dcterms:contributor>Hans-Georg Müller</dcterms:contributor>
